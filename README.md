@@ -1,78 +1,73 @@
-# Bank Loan Analytics Dashboard & Database Project
+# Bank Loan Analysis
 
-## 📌 Project Overview
-This project is an end-to-end data analytics solution designed to monitor and assess bank loan performance. It combines a relational database setup with advanced SQL querying for deep risk analysis alongside an interactive Power BI dashboard for executive Key Performance Indicators (KPIs) and trend tracking. 
+SQL analysis and a Power BI report for exploring loan applications, funded amounts, repayments and loan-status segments.
 
-The primary objective is to evaluate loan applications, distinguish between good and bad financial risks, track monthly trends, and provide actionable segment insights using both database modeling and visual reporting.
+[Power BI report](dashboard/Graduation%20dashboard.pbix) · [SQL queries](data/Bank_db%20Queries.sql) · [Project presentation](dashboard/Graduate%20Presentation.pdf)
 
----
+## Problem Statement
 
-## 🛠️ Tools & Technologies Used
-* **Power BI Desktop:** For data transformation, DAX modeling, and visual dashboard design.
-* **SQL Server / Relational Database:** For writing structured analytical queries and data extraction.
-* **Power Query (M Language):** For data cleanup and ETL processes.
-* **DAX (Data Analysis Expressions):** For dynamic business metrics and custom KPIs.
+A lending portfolio needs more than a total application count. This project examines how funding and received payments vary over time and across borrower attributes, and separates loan statuses to support portfolio monitoring.
 
----
+## Report Preview
 
-## 💾 Database Structure & Data Dictionary
-The core dataset is built around the `bank_loan_data` table inside the `BankLoanDB` database. Below is the structure used for analytical queries:
+[View the existing loan-summary presentation](dashboard/Graduate%20Presentation.pdf)
 
-| Column Name | Data Type / Format | Description & Purpose |
-| :--- | :--- | :--- |
-| `id` | Unique ID | Unique identifier for each loan application used in counting. |
-| `issue_date` | Date | The date the loan was officially issued, used for time filtering. |
-| `loan_amount` | Numeric | The total funded loan amount approved by the bank. |
-| `total_payment` | Numeric | The total amount paid back by the borrower so far. |
-| `int_rate` | Decimal (Percentage) | The interest rate applied to the loan. |
-| `dti` | Decimal (Ratio) | Debt-to-Income ratio measuring the borrower's financial risk. |
-| `loan_status` | Text / Categorical | Current state of the loan (e.g., `Fully Paid`, `Current`, `Charged Off`). |
-| `term` | Text / Categorical | The duration of the loan agreement (e.g., 36 or 60 months). |
-| `emp_length` | Text / Categorical | Employment duration of the applicant. |
-| `home_ownership`| Text / Categorical | Residential status (e.g., `Mortgage`, `Own`, `Rent`). |
-| `grade` | Text / Categorical | Credit quality rating category assignment (e.g., Grade `A`). |
-| `purpose` | Text / Categorical | The explicit reason the borrower applied for the loan. |
+The committed presentation includes a loan-summary preview on page 8. It is not a newly refreshed Power BI report. The PBIX contains Summary, OverView and Details report pages, plus an empty Page 1.
 
----
+## Methodology
 
-## 🔍 SQL Portfolio (Risk & Trend Analysis)
-The SQL scripts execute robust operations categorized into distinct stages:
-1. **Basic KPI Tracking:** Calculating total loan applications, Month-to-Date (MTD), and Previous Month-to-Date (PMTD) metrics for funded amounts and payments received.
-2. **Credit Risk Segmentation:**
-   * **Good Loans:** Evaluating applications classified as `Fully Paid` or `Current` to figure out percentage metrics and total financial returns.
-   * **Bad Loans:** Quantifying defaults and financial write-offs (`Charged Off` status) to measure risk exposure.
-3. **Multi-Dimensional Grouping:** Synthesizing performance tables grouped by loan status, monthly issuance timelines, employment tenure gaps, regional homeownership dynamics, and loan motivations.
+1. **Inspect the loan table:** query `BankLoanDB.bank_loan_data` and its application-level fields.
+2. **Calculate portfolio KPIs:** application count, funded amount, amount received, interest rate and debt-to-income ratio.
+3. **Compare loan statuses:** the SQL groups `Fully Paid` and `Current` as good loans and `Charged Off` as bad loans.
+4. **Explore segments:** aggregate by issue month, term, employment length, home ownership, grade and loan purpose.
+5. **Present results:** explore the Summary, OverView and Details pages in Power BI Desktop.
 
----
+The status labels are analytical categories used by this project. A Current loan is not a guarantee of eventual repayment.
 
-## 📊 Power BI Lifecycle Implementation
+## Insights
 
-### 1. Data ETL & Quality Assurance
-* Data connection validation and source configuration mappings.
-* Rigorous cleanup steps via Power Query: Handled missing entries, stripped out duplicates, validated data types, and filtered null fields to preserve dataset integrity.
+- Application volume, funded amount and received payments answer different questions and should be reviewed together.
+- Loan-status segmentation helps distinguish exposure from money already received.
+- Employment, purpose and home-ownership breakdowns support further investigation, but do not establish causes of default.
 
-### 2. Data Modeling & Star Schema Architecture
-* Arranged data entities into normalized layouts using structured schema rules.
-* Built reliable data relationships with strict cardinality rules:
-  * `Customers[CustomerID]` $\rightarrow$ `Orders[CustomerID]` (One-to-Many / Single Direction)
-  * `Orders[OrderID]` $\rightarrow$ `Reviews[OrderID]` (One-to-Many / Single Direction)
+These are interpretations supported by the query structure. This README does not invent portfolio totals or claim that the dataset has been refreshed.
 
-### 3. DAX Metric Development
-Custom enterprise business metrics developed include:
-* **Total Revenue:** `SUM(Orders[Revenue])` - Sum of all sales.
-* **Total Orders:** `COUNT(Orders[OrderID])` - Count of orders.
-* **Average Order Value (AOV):** `DIVIDE([Total Revenue], [Total Orders])` - Average revenue per order.
-* **Net Revenue:** `CALCULATE([Total Revenue], Orders[Status] = "Delivered")` - Revenue only from completed deliveries.
-* **Review Rate:** `AVERAGE(Reviews[Rating])` - General average rating.
+## Business Recommendations
 
-### 4. Interactive Report Visuals
-The frontend dashboard consists of three highly tailored diagnostic views:
-* **Revenue Overview:** Focused on high-level executive KPI summaries for revenue and AOV.
-* **Customer Ratings:** Showcases deep-dive product and customer insights.
-* **Order Details:** Dedicated view tracking precise order completions and status counts.
+- Monitor charged-off exposure alongside funded and received amounts.
+- Compare segments using both volume and risk measures rather than volume alone.
+- Investigate unusual monthly changes before drawing conclusions about lending performance.
+- Use validated credit-risk processes for lending decisions; this portfolio analysis is not an automated approval model.
 
----
+## Key Fields
 
-## 📈 Dashboard Key Features
-* **Advanced Slicers & Filters:** Implemented Page-level parameters (`Date` ranges, `Order Status` flags) and Report-level dropdown configurations (`Customer` names) for granular data exploration.
-* **Performance Security:** Zero division errors achieved through secure `DIVIDE()` functions, accompanied by a verified structural loop check ensuring clean report calculations.
+| Field | Meaning in the analysis |
+| --- | --- |
+| `id` | Loan application identifier |
+| `issue_date` | Loan issue date |
+| `loan_amount` | Funded loan amount |
+| `total_payment` | Recorded payments received |
+| `loan_status` | Fully Paid, Current or Charged Off |
+| `int_rate`, `dti` | Interest rate and debt-to-income ratio |
+| `term`, `emp_length` | Term and employment-length segments |
+| `home_ownership`, `grade`, `purpose` | Borrower and loan attributes |
+
+## How to Explore
+
+1. Download the PBIX and open it in Power BI Desktop.
+2. Review the report pages using the existing embedded data.
+3. Before refreshing, inspect **Data source settings** and replace any machine-specific source locations or credentials.
+4. To run the SQL, supply a SQL Server database named `BankLoanDB` with a compatible `bank_loan_data` table.
+
+## Reproducibility Notes
+
+- The standalone source database and a database-creation script are not included in this repository.
+- Some SQL examples hard-code November or December 2021. They are fixed-month examples, not a dynamic current MTD calculation.
+- The committed SQL contains encoding artifacts that need review before execution. The original script is preserved in this documentation pass.
+- Some older supporting documents contain generic e-commerce examples. The overview above follows the actual loan SQL and PBIX page structure instead.
+
+## Repository Guide
+
+- `dashboard/`: Power BI file and project presentation.
+- `data/Bank_db Queries.sql`: loan KPI and segmentation queries.
+- `src/`: original supporting project documents.
