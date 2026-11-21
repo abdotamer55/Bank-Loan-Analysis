@@ -12,6 +12,14 @@ A lending portfolio needs more than a total application count. This project exam
 
 [View the existing loan-summary presentation](dashboard/Graduate%20Presentation.pdf)
 
+Dashboard slides from the committed presentation:
+
+![Bank loan report - funded amount and amount received summary](screenshots/bank_dashboard_summary_funding.png)
+
+![Bank loan report - good vs bad loans summary](screenshots/bank_dashboard_summary_good_bad.png)
+
+![Bank loan report - overview charts](screenshots/bank_dashboard_overview.png)
+
 The committed presentation includes a loan-summary preview on page 8. It is not a newly refreshed Power BI report. The PBIX contains Summary, OverView and Details report pages, plus an empty Page 1.
 
 ## Methodology
